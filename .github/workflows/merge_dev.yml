@@ -1,0 +1,66 @@
+name: Merge dev
+on:
+  push:
+    branches: [HU**, FIX**]
+jobs:
+  correr-test-funcionalidad:
+    name: Correr-test
+    if:  ${{ contains(github.event.head_commit.message, 'DONE') }}
+    runs-on: ubuntu-latest
+    outputs:
+      salida: ${{ steps.imprimir.outputs.respuesta }}
+    steps:
+      - name: Checkout de repositorio
+        uses: actions/checkout@v2
+      - name: Configuración de entorno de python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Instalación de librerías y dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Correr pruebas
+        id: correr-pruebas
+        if: ${{ contains(github.event.head_commit.message, 'merge_desarrollo') }}
+        run: python -m unittest -v
+      - name: Validar resultado con errores
+        if: ${{ failure() }}
+        env:
+          MENSAJE_ERROR: Una o varias pruebas fallaron
+        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+      - name: Validar resultado sin errores
+        if: ${{ success() }}
+        env:
+          MENSAJE_EXITO: Todas las pruebas fueron exitosas
+        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
+      - name: Cálculo de cubrimiento desarrollo
+        id: cubrimiento
+        run: |
+          
+
+  merege-ramafuncion-desarrollo:
+    name: Merge-dev
+    needs: correr-test-funcionalidad
+    runs-on: ubuntu-latest
+    outputs:
+      salida: ${{ steps.imprimir.outputs.respuesta }}
+    steps:
+    - name: Mezcla ${{ github.ref }} -> develop
+      if: echo ${{needs.correr-test-funcionalidad.outputs.salida}}
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: ${{ github.ref }}
+        target-branch: develop
+      env:
+        MENSAJE_MERGE: Merge successful
+
+
+  
+
+
+        
+        
+
+
