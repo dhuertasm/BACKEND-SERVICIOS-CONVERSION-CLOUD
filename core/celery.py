@@ -1,8 +1,5 @@
 from celery import Celery
 
-
-import logging
-
 BROKER_URL = 'redis://localhost:6379'
 
 app = Celery('tasks', broker=BROKER_URL)
@@ -11,11 +8,11 @@ app = Celery('tasks', broker=BROKER_URL)
 def setup_periodic_tasks(sender, **kwargs):
 
     # Calls test('world') every 30 seconds
-    sender.add_periodic_task(10.0, add.s(1, 1), expires=10)
+    sender.add_periodic_task(10.0, add_test.s(1, 1), expires=10)
 
 
 @app.task()
-def add(a, b):
+def add_test(a, b):
     return a + b
 
 

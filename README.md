@@ -59,6 +59,13 @@ create user
 $  flask run --reload
 ```
 
+### celery 
+
+```sh
+$  celery -A core.celery worker --loglevel=info
+```
+
+
 ## Running whit docker-compose for different envs
 
 * Export your enviroment as environ variable
