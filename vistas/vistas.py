@@ -6,7 +6,7 @@ from modelos import db
 from modelos import Usuario
 from modelos import UsuarioSchema
 
-from core.celery import add_test
+# from core.celery import add_test
 usuario_schema = UsuarioSchema()
 
 
@@ -21,7 +21,7 @@ class VistaRoot(Resource):
 class VistaHealth(Resource):
 
     def get(self):
-        add_test.delay(1, 2)
+        # add_test.delay(1, 2)
         return {"satus": "ok"}
 
 
