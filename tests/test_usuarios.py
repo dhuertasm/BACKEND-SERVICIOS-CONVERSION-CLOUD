@@ -13,12 +13,12 @@ class TestApuesta(TestCase):
     def setUp(self):
         self.data_factory = Faker()
         self.client = app.test_client()
-        password = self.data_factory.word()
+        self.password = self.data_factory.word()
         self.nuevo_usuario = {
             "username": self.data_factory.name(),
             "email": self.data_factory.name(),
-            "password1": password,
-            "password2": password,
+            "password1": self.password,
+            "password2": self.password,
         }
 
     def test_crear_usuario(self):
@@ -37,8 +37,8 @@ class TestApuesta(TestCase):
         nuevo_usuario = {
 
             "email": self.data_factory.random_int(100, 200),
-            "password1": self.data_factory.word(),
-            "password2": self.data_factory.random_int(100, 200)
+            "password1": self.password,
+            "password2": self.password
         }
 
         solicitud_nuevo_usuario = self.client.post("/signin",

@@ -6,7 +6,6 @@ from modelos import db
 from modelos import Usuario
 from modelos import UsuarioSchema
 
-# from core.celery import add_test
 usuario_schema = UsuarioSchema()
 
 
@@ -21,7 +20,6 @@ class VistaRoot(Resource):
 class VistaHealth(Resource):
 
     def get(self):
-        # add_test.delay(1, 2)
         return {"satus": "ok"}
 
 
@@ -29,24 +27,26 @@ class VistaSignIn(Resource):
 
     def post(self):
         try:
-            nuevo_usuario = Usuario(
-                username=request.json["username"],
-                email=request.json["email"],
-                password1=request.json["password1"],
-                password2=request.json["password2"],
-            )
+            if request.json["password1"] == request.json["password2"]:
+                nuevo_usuario = Usuario(
+                    username=request.json["username"],
+                    email=request.json["email"],
+                    password1=request.json["password1"],
+                    password2=request.json["password2"],
+                )
 
-            db.session.add(nuevo_usuario)
-            db.session.commit()
-            token_de_acceso = create_access_token(identity=nuevo_usuario.id)
-            return {"mensaje": "usuario creado exitosamente", "token": token_de_acceso, "id": nuevo_usuario.id}
+                db.session.add(nuevo_usuario)
+                db.session.commit()
+                token_de_acceso = create_access_token(identity=nuevo_usuario.id)
+                return {"mensaje": "usuario creado exitosamente", "token": token_de_acceso, "id": nuevo_usuario.id}
+            return {"mensaje": "las contrasenas no coinciden"}
         except Exception as e:
             print(e)
             return {"mensaje": f"falta {e}"}
 
     def put(self, id_usuario):
         usuario = Usuario.query.get_or_404(id_usuario)
-        usuario.contrasena = request.json.get("password1", usuario.contrasena)
+        usuario.password1 = request.json.get("password", usuario.contrasena)
         db.session.commit()
         return usuario_schema.dump(usuario)
 
@@ -58,7 +58,14 @@ class VistaSignIn(Resource):
 
 
 class VistaLogIn(Resource):
-
-    pass
+    def post(self):
+        usuario = Usuario.query.filter(Usuario.email == request.json['email'],
+                                       Usuario.password1 == request.json['password1']).first()
+        db.session.commit()
+        if usuario is None:
+            return {"mensaje": "El usuario no existe", "code": 404}
+        else:
+            token_de_acceso = create_access_token(identity=usuario.id)
+            return {"mansaje": "Inicio de sesion exitoso", "token": token_de_acceso}
 
 
