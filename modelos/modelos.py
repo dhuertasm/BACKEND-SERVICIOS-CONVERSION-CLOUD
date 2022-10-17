@@ -12,10 +12,10 @@ class Usuario(db.Model):
     email = db.Column(db.String(50))
     password1 = db.Column(db.String(50))
     password2 = db.Column(db.String(50))
-    carreras = db.relationship('ArchivosSubidos', cascade='all, delete, delete-orphan')
+    id_archivosubido = db.relationship('ArchivoSubido', cascade='all, delete, delete-orphan')
 
 
-class ArchivosSubidos(db.Model):
+class ArchivoSubido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_archivo = db.Column(db.String(128))
     ruta_archivo = db.Column(db.String(128))
@@ -24,28 +24,29 @@ class ArchivosSubidos(db.Model):
     estado_proceso = db.Column(db.String(128))
     fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
+    id_archivotranformado = db.relationship('ArchivoTranformado', cascade='all, delete, delete-orphan')
 
 
-class ArchivosTranformados(db.Model):
+class ArchivoTranformado(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_archivo = db.Column(db.String(128))
     ruta_archivo = db.Column(db.String(128))
     formato_salida = db.Column(db.String(128))
     fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
+    id_archivosubido = db.Column(db.Integer, db.ForeignKey("archivo_subido.id"))
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'))
 
 
 class ArchivosSubidos(SQLAlchemyAutoSchema):
     class Meta:
-        model = ArchivosSubidos
+        model = ArchivoSubido
         include_relationships = True
         load_instance = True
 
 
 class ArchivosTranformados(SQLAlchemyAutoSchema):
     class Meta:
-        model = ArchivosTranformados
+        model = ArchivoTranformado
         include_relationships = True
         load_instance = True
 
@@ -55,5 +56,3 @@ class UsuarioSchema(SQLAlchemyAutoSchema):
         model = Usuario
         include_relationships = True
         load_instance = True
-
-
