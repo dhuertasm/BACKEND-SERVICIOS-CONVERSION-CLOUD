@@ -60,7 +60,7 @@ class VistaSignIn(Resource):
 class VistaLogIn(Resource):
     def post(self):
         usuario = Usuario.query.filter(Usuario.email == request.json['email'],
-                                       Usuario.password1 == request.json['password1']).first()
+                                       Usuario.password1 == request.json['password']).first()
         db.session.commit()
         if usuario is None:
             return {"mensaje": "El usuario no existe", "code": 404}
