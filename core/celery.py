@@ -1,5 +1,4 @@
 from celery import Celery
-from pydub import AudioSegment
 BROKER_URL = 'redis://localhost:6379'
 
 app = Celery('tasks', broker=BROKER_URL)
@@ -14,8 +13,6 @@ def setup_periodic_tasks(sender, **kwargs):
 @app.task()
 def add_test(a, b):
 
-    sound = AudioSegment.from_mp3("/path/to/file.mp3")
-    sound.export("/output/path/file.wav", format="wav")
     return a + b
 
 

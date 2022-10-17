@@ -37,14 +37,14 @@ class ArchivoTranformado(db.Model):
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'))
 
 
-class ArchivosSubidos(SQLAlchemyAutoSchema):
+class ArchivoSubidoSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = ArchivoSubido
         include_relationships = True
         load_instance = True
 
 
-class ArchivosTranformados(SQLAlchemyAutoSchema):
+class ArchivoTranformadoSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = ArchivoTranformado
         include_relationships = True
