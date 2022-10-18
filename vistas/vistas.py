@@ -1,12 +1,17 @@
 from flask import request
+from flask import Response
+from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
 
 from modelos import db
 from modelos import Usuario
 from modelos import UsuarioSchema
+from modelos import Tarea
+from modelos import TareaSchema
 
 usuario_schema = UsuarioSchema()
+tarea_schema = TareaSchema()
 
 
 class VistaRoot(Resource):
@@ -68,4 +73,34 @@ class VistaLogIn(Resource):
             token_de_acceso = create_access_token(identity=usuario.id)
             return {"mansaje": "Inicio de sesion exitoso", "token": token_de_acceso}
 
+class VistaTasks(Resource):
+    
+    @jwt_required()
+    def get(self):
+        if(not "user_id" in request.json):
+            return Response("Bad Request", status=400)
+        
+        usuario = Usuario.query.get_or_404(request.json['user_id'])
 
+        if(not "order" in request.json):
+            order=0
+        else:
+            order=request.json['order']
+        
+        if(not "max" in request.json):
+            if(order == 0):
+                query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.asc()).all()
+            else:
+                query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.desc()).all()
+        else:
+            if(request.json['max']<=0):
+                if(order == 0):
+                    query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.asc()).all()
+                else:
+                   query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.desc()).all() 
+            else:
+                if(order == 0):
+                    query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.asc()).limit(request.json['max']).all()
+                else:
+                    query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.desc()).limit(request.json['max']).all()
+        return [tarea_schema.dump(tarea) for tarea in query]

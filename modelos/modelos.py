@@ -1,4 +1,8 @@
 import datetime
+from email.policy import default
+from json import load
+from pyexpat import model
+from xml.etree.ElementInclude import include
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
@@ -36,6 +40,14 @@ class ArchivoTranformado(db.Model):
     id_archivosubido = db.Column(db.Integer, db.ForeignKey("archivo_subido.id"))
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'))
 
+class Tarea(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fileName = db.Column(db.String(256))
+    newFormat = db.Column(db.String(128))
+    timeStamp = db.Column(db.DateTime, default=datetime.datetime.now)
+    status = db.Column(db.String(128), default="uploaded")
+    outputFileName = db.Column(db.String(256))
+    user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
 
 class ArchivosSubidos(SQLAlchemyAutoSchema):
     class Meta:
@@ -56,3 +68,10 @@ class UsuarioSchema(SQLAlchemyAutoSchema):
         model = Usuario
         include_relationships = True
         load_instance = True
+
+class TareaSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Tarea
+        include_relationships =True
+        load_instance = True
+    timeStamp = fields.String()
