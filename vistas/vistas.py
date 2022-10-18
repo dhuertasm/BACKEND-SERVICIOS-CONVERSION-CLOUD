@@ -104,3 +104,9 @@ class VistaTasks(Resource):
                 else:
                     query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.desc()).limit(request.json['max']).all()
         return [tarea_schema.dump(tarea) for tarea in query]
+
+class VistaTask(Resource):
+    @jwt_required()
+    def get(self, id_task):
+        tarea = Tarea.query.get_or_404(id_task)
+        return tarea_schema.dump(tarea)
