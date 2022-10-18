@@ -1,4 +1,5 @@
 from flask import request
+from flask import send_from_directory
 from flask import Response
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
@@ -13,6 +14,7 @@ from modelos import TareaSchema
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
 
+OUTPUT_FILES_FOLDER = "media/"
 
 class VistaRoot(Resource):
     def get(self):
@@ -110,3 +112,12 @@ class VistaTask(Resource):
     def get(self, id_task):
         tarea = Tarea.query.get_or_404(id_task)
         return tarea_schema.dump(tarea)
+
+class VistaArchivo(Resource):
+    @jwt_required()
+    def get(self,filename):
+
+        try:
+            return send_from_directory(OUTPUT_FILES_FOLDER,filename, as_attachment=True)
+        except FileNotFoundError:
+            return Response("Not Found", status=404)
