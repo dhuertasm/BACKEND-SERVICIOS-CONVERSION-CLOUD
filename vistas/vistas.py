@@ -10,10 +10,14 @@ from modelos import Usuario
 from modelos import UsuarioSchema
 from modelos import Tarea
 from modelos import TareaSchema
+from modelos import Archivo
+from modelos import ArchivoSchema
 
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
+archivo_schema = ArchivoSchema()
 
+INPUT_FILES_FOLDER = "media/"
 OUTPUT_FILES_FOLDER = "media/"
 
 class VistaRoot(Resource):
@@ -111,13 +115,18 @@ class VistaTask(Resource):
     @jwt_required()
     def get(self, id_task):
         tarea = Tarea.query.get_or_404(id_task)
+        
         return tarea_schema.dump(tarea)
 
 class VistaArchivo(Resource):
     @jwt_required()
-    def get(self,filename):
-
+    def get(self,filename):        
         try:
-            return send_from_directory(OUTPUT_FILES_FOLDER,filename, as_attachment=True)
-        except FileNotFoundError:
+            query = db.session.query(Archivo).filter_by(nombre_archivo=filename).all()
+            if (len(query)==0):
+                return Response("Not Found", status=404)
+            print(query[0].ruta_archivo)
+            print(query[0].nombre_archivo)
+            return send_from_directory(query[0].ruta_archivo,query[0].nombre_archivo, as_attachment=True)
+        except:
             return Response("Not Found", status=404)
