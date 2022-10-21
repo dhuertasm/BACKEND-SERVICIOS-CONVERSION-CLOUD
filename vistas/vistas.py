@@ -1,9 +1,10 @@
-from flask import request
+from flask import jsonify, request
 from flask import send_from_directory
 from flask import Response
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
+import os
 
 from modelos import db
 from modelos import Usuario
@@ -42,8 +43,7 @@ class VistaSignIn(Resource):
                 nuevo_usuario = Usuario(
                     username=request.json["username"],
                     email=request.json["email"],
-                    password1=request.json["password1"],
-                    password2=request.json["password2"],
+                    password=request.json["password1"],
                 )
 
                 db.session.add(nuevo_usuario)
@@ -71,7 +71,7 @@ class VistaSignIn(Resource):
 class VistaLogIn(Resource):
     def post(self):
         usuario = Usuario.query.filter(Usuario.email == request.json['email'],
-                                       Usuario.password1 == request.json['password1']).first()
+                                       Usuario.password == request.json['password']).first()
         db.session.commit()
         if usuario is None:
             return {"mensaje": "El usuario no existe", "code": 404}
@@ -117,6 +117,21 @@ class VistaTask(Resource):
         tarea = Tarea.query.get_or_404(id_task)
         
         return tarea_schema.dump(tarea)
+    
+    @jwt_required()
+    def delete(self, id_task):
+        tarea = Tarea.query.filter(Tarea.id == id_task, Tarea.estado == "disponible").first()
+        if tarea is None:
+            return {"mensaje": "Not Found", "code": 404}
+        for archivo in tarea.archivos:
+            try:
+                os.remove(os.path.join(archivo.ruta_archivo, archivo.nombre_archivo))
+            except OSError as e:
+                return {"mensaje": e, "code": 404}
+        db.session.delete(tarea)
+        db.session.commit()
+        return {"mensaje": "Archivos eliminados", "code": 204}
+                  
 
 class VistaArchivo(Resource):
     @jwt_required()
