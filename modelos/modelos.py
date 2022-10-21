@@ -15,7 +15,7 @@ class Usuario(db.Model):
     username = db.Column(db.String(50))
     email = db.Column(db.String(50))
     password = db.Column(db.String(50))
-    id_tareas = db.relationship('Tarea', cascade='all, delete, delete-orphan')
+    tareas = db.relationship('Tarea', cascade='all, delete, delete-orphan')
 
 class Tarea(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +25,7 @@ class Tarea(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
     estado = db.Column(db.String(128), default="uploaded")
     user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
-    id_archivos = db.relationship('Archivo', cascade='all, delete, delete-orphan')
+    archivos = db.relationship('Archivo', cascade='all, delete, delete-orphan')
 
 class Archivo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
