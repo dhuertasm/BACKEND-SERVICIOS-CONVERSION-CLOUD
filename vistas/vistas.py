@@ -1,9 +1,11 @@
+import os
 from flask import request
 from flask import send_from_directory
 from flask import Response
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
+from werkzeug.utils import secure_filename
 
 from modelos import db
 from modelos import Usuario
@@ -71,7 +73,7 @@ class VistaSignIn(Resource):
 class VistaLogIn(Resource):
     def post(self):
         usuario = Usuario.query.filter(Usuario.email == request.json['email'],
-                                       Usuario.password1 == request.json['password1']).first()
+                                       Usuario.password == request.json['password']).first()
         db.session.commit()
         if usuario is None:
             return {"mensaje": "El usuario no existe", "code": 404}
@@ -111,11 +113,44 @@ class VistaTasks(Resource):
                     query = db.session.query(Tarea).filter_by(user_id=usuario.id).order_by(Tarea.id.desc()).limit(request.json['max']).all()
         return [tarea_schema.dump(tarea) for tarea in query]
 
+    @jwt_required()
+    def post(self):
+        if not request.files["fileName"] or not request.values["newFormat"]:
+            return Response("Bad Request", status=400)
+        else:
+            archivo_cargado = request.files["fileName"]
+            nombre_archivo = secure_filename(archivo_cargado.filename)
+            archivo_cargado.save(os.path.join(INPUT_FILES_FOLDER, nombre_archivo))
+            nueva_tarea = Tarea(nombre_archivo=nombre_archivo,\
+                                 formato_entrada=nombre_archivo.split(".")[-1],\
+                                 formato_salida=request.values["newFormat"])
+            db.session.add(nueva_tarea)
+            db.session.commit()
+            nuevo_archivo = Archivo(nombre_archivo=nombre_archivo,\
+                                    ruta_archivo=INPUT_FILES_FOLDER,\
+                                    id_tarea=nueva_tarea.id)
+            db.session.add(nuevo_archivo)
+            db.session.commit()
+        return "Tarea creada exitosamente" 
+
 class VistaTask(Resource):
     @jwt_required()
     def get(self, id_task):
         tarea = Tarea.query.get_or_404(id_task)
         
+        return tarea_schema.dump(tarea)
+
+    @jwt_required()
+    def put(self, id_task):
+        if not request.json["newFormat"]:
+            return Response("Bad Request", status=400)
+        else:
+            tarea = Tarea.query.get_or_404(id_task)
+            if tarea.estado == "processed":
+                os.remove(os.path.join(INPUT_FILES_FOLDER, tarea.nombre_archivo))
+            tarea.estado = "uploaded"
+            tarea.formato_salida = request.json.get("newFormat", tarea.formato_salida)
+            db.session.commit()
         return tarea_schema.dump(tarea)
 
 class VistaArchivo(Resource):
