@@ -1,5 +1,6 @@
+import os
 from celery import Celery
-BROKER_URL = 'redis://localhost:6379'
+BROKER_URL = os.environ.get('BROKER_URL', 'redis://localhost:6379')
 
 app = Celery('tasks', broker=BROKER_URL)
 

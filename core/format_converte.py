@@ -23,10 +23,11 @@ class ExportMusic:
         )
         db.session.add(nueva_archivotranformado)
         db.session.commit()
+        # cambio  estado de pendind process
 
     def query_database_archivosubido(self) -> dict:
-        all_uploaded = db.session.query(ArchivoSubido).filter(ArchivoSubido.estado_proceso == 'uploaded').all()
-        return {i.formato_entrada: [i.ruta_archivo, i.formato_salida] for i in all_uploaded}
+        all_uploaded = db.session.query(ArchivoSubido).filter(ArchivoSubido.estado_proceso == 'pending').all()
+        return {i.formato_entrada: [i.ruta_archivo, i.formato_salida, i.id] for i in all_uploaded}
 
     def read_file(self, type_file, file_path):
         if "mp3" == type_file:
@@ -58,8 +59,9 @@ class ExportMusic:
         for type_file, export in files_to_export.items():
             read_file = self.read_file(type_file, export[0])
             self.export_file(read_file, export[1], export[0])
-        self.update_state("pending", "processed")
+        # self.update_state("pending", "processed")
 
 
 
+# tarea
 

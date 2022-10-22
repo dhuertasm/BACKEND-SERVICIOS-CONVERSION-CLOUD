@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -12,7 +14,13 @@ from vistas import VistaRoot
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///conversion.db'
+# our database uri
+username = "admin"
+password = "admin"
+dbname = "conversion"
+hostname = os.getenv('HOSTNAME', 'localhost')
+app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{username}:{password}@{hostname}:5432/{dbname}"
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///conversion.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'frase-secreta'
 app.config['PROPAGATE_EXCEPTIONS'] = True
