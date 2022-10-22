@@ -4,6 +4,7 @@ from flask import send_from_directory
 from flask import Response
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
 from flask_restful import Resource
 from werkzeug.utils import secure_filename
 
@@ -123,7 +124,8 @@ class VistaTasks(Resource):
             archivo_cargado.save(os.path.join(INPUT_FILES_FOLDER, nombre_archivo))
             nueva_tarea = Tarea(nombre_archivo=nombre_archivo,\
                                  formato_entrada=nombre_archivo.split(".")[-1],\
-                                 formato_salida=request.values["newFormat"])
+                                 formato_salida=request.values["newFormat"],\
+                                 user_id = get_jwt_identity())
             db.session.add(nueva_tarea)
             db.session.commit()
             nuevo_archivo = Archivo(nombre_archivo=nombre_archivo,\
