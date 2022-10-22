@@ -44,7 +44,7 @@ class TareaSchema(SQLAlchemyAutoSchema):
         model = Tarea
         include_relationships =False
         load_instance = True
-    timeStamp = fields.String()
+        timeStamp = fields.String()
 
 class ArchivoSchema(SQLAlchemyAutoSchema):
     class Meta:
