@@ -15,7 +15,7 @@ from vistas import VistaTask
 from vistas import VistaArchivo
 
 UPLOAD_FOLDER = './media'
-ALLOWED_EXTENSIONS = {'txt', 'mp3', 'acc', 'ogg', 'wav', 'wma'}
+ALLOWED_EXTENSIONS = {'txt', 'mp3', 'acc', 'ogg', 'wav', 'wma', 'mp4'}
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///conversion.db'
