@@ -1,67 +1,79 @@
+import subprocess
 from pydub import AudioSegment
+import glob
 from modelos import db
-from modelos import ArchivoSubido
-from modelos import ArchivoTranformado
-
+from modelos import Tarea
+from modelos import Archivo
+import os
 class ExportMusic:
 
     def __init__(self):
         pass
 
-    @staticmethod
-    def update_state_archivosubido(state_i, state_f) -> None:
-        db.session.query(ArchivoSubido).filter(ArchivoSubido.estado_proceso == state_i).\
-            update({ArchivoSubido.estado_proceso: state_f}, synchronize_session=False)
 
-    def update_database_archivotranformado(state_i, data) -> None:
-        nueva_archivotranformado = ArchivoTranformado(
+    def update_state_archivosubido(self, state_i, state_f) -> None:
+        db.session.query(Tarea).filter(Tarea.estado == state_i).\
+            update({Tarea.estado: state_f}, synchronize_session=False)
+        db.session.commit()
+
+    def update_database_archivotranformado(self, data) -> None:
+        nueva_archivotranformado = Archivo(
                                 nombre_archivo=data["nombre_archivo"],
                                 ruta_archivo=data["ruta_archivo"],
-                                formato_salida=data["formato_salida"],
-                                id_archivosubido=data["id_archivosubido"],
-                                id_usuario=data["id_usuario"]
+                                id_tarea=data["id_tarea"]
         )
         db.session.add(nueva_archivotranformado)
+        db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \
+            update({Tarea.estado: 'processed'}, synchronize_session=False)
         db.session.commit()
-        # cambio  estado de pendind process
 
-    def query_database_archivosubido(self) -> dict:
-        all_uploaded = db.session.query(ArchivoSubido).filter(ArchivoSubido.estado_proceso == 'pending').all()
-        return {i.formato_entrada: [i.ruta_archivo, i.formato_salida, i.id] for i in all_uploaded}
+    def query_database_archivosubido(self) -> list:
+        all_uploaded = db.session.query(Tarea).filter(Tarea.estado == 'pending').all()
+        return [
+                 {"formato_entrada": i.formato_entrada,
+                  'id_tarea': i.id,
+                  'formato_salida': i.formato_salida,
+                  'nombre_archivo': i.nombre_archivo}
+            for i in all_uploaded
+        ]
 
-    def read_file(self, type_file, file_path):
-        if "mp3" == type_file:
-            return AudioSegment.from_mp3(file_path)
-        elif "aac" == type_file:
-            return AudioSegment.from_file(file_path, "aac")
-        elif "ogg" == type_file:
-            return AudioSegment.from_ogg(file_path)
-        elif "wav" == type_file:
-            return AudioSegment.from_wav(file_path)
-        elif "wma" == type_file:
-            return AudioSegment.from_file(file_path, "wma")
-        return False
+    def read_file(self, data):
+        pass
 
-    def export_file(self, file, format, name):
-        if file:
-            name = '.'.join(name.split('.')[0:-1] + [format])
-            file_export = f"./media/transformados/{name}"
-            file.export(file_export, format=format)
-            data = {
+    def export_file(self, data):
+        name = '{}.{}'.format(data['nombre_archivo'], data['formato_salida'])
+        file_export = f"./media/{name}"
+        file_path = './media/{}.{}'.format(data['nombre_archivo'], data['formato_entrada'])
+        dir_actual = os.path.dirname(os.path.abspath(__file__))
+        print(dir_actual)
+        print(glob.glob('./media/*', recursive=True))
+        try:
+            converter = subprocess.call(['ffmpeg', '-i', file_path,
+                             file_export])
 
-            }
-            self.update_database_archivotranformado()
+            if converter == 0:
+                save_file = {
+                    "nombre_archivo": name,
+                    'ruta_archivo': file_export,
+                    'id_tarea': data['id_tarea'],
 
+                }
+                self.update_database_archivotranformado(save_file)
+                return True
+
+            db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \
+                update({Tarea.estado: 'uploaded'}, synchronize_session=False)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return False
 
     def process(self):
         self.update_state_archivosubido("uploaded", "pending")
         files_to_export = self.query_database_archivosubido()
-        for type_file, export in files_to_export.items():
-            read_file = self.read_file(type_file, export[0])
-            self.export_file(read_file, export[1], export[0])
-        # self.update_state("pending", "processed")
+        for data in files_to_export:
+            self.export_file(data)
 
 
 
-# tarea
 

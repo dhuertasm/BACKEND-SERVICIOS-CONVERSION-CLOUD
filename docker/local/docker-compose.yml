@@ -9,8 +9,6 @@ services:
   postgres:
     image: 'postgres:latest'
     restart: always
-    volumes:
-      - './postgres_data:/var/lib/postgresql/data'
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
@@ -26,8 +24,6 @@ services:
     depends_on:
       - redis
       - postgres
-    volumes:
-      - ../../:/conversiones
     env_file:
       - ../../.env
     ports:
@@ -38,9 +34,7 @@ services:
     build:
       context: ../../
       dockerfile: docker/local/Dockerfile
-    command: celery -A core.celery beat --loglevel=info
-    volumes:
-      - ../../:/convertir
+    command: celery -A core.celery worker --beat --loglevel=info
     depends_on:
       - redis
     env_file:

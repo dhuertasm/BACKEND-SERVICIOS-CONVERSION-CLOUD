@@ -73,23 +73,17 @@ $  celery -A core.celery worker --loglevel=info
           export BROKER_URL='redis://127.0.0.1:6379'
     ```
 
-* Run your docker compose with this command
+* Run your docker compose with this command in /docker/local
     ```shell
-        docker-compose --file docker/${ENV}/docker-compose.yml up  --build
+        sudo docker-compose build --no-cache
     ```
+  and 
+    ```shell
+        sudo docker-compose up
+    ```
+
     * **Note** if build is not required you can ommit the `--build`
 
-## Running whit docker
-
-* Export your enviroment as environ variable
-    ```shell
-          docker build --no-cache -t datacredito_score:test -f docker/staging/uvicorn/Dockerfile ./
-    ```
-
-* Run your docker compose with this command
-    ```shell
-        ddocker run -p 8001:8001 --rm -it -w="/www" -v $(pwd):/www datacredito_score:test bash
-    ```
     
 <!-- API -->
 ## API
