@@ -16,7 +16,11 @@ from vistas import VistaTasks
 from vistas import VistaTask
 from vistas import VistaArchivo
 
-UPLOAD_FOLDER = './media'
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'mediafiles')
+
+#UPLOAD_FOLDER = './mediafiles'
 ALLOWED_EXTENSIONS = {'txt', 'mp3', 'acc', 'ogg', 'wav', 'wma', 'mp4'}
 
 app = Flask(__name__)
@@ -30,7 +34,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{username}:{password}@{ho
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'frase-secreta'
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['UPLOADED_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db.init_app(app)
 

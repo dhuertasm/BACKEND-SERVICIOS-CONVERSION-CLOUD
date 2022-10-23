@@ -29,16 +29,32 @@ services:
     ports:
       - "8001:8001"
     command: /flask_start
+    volumes:
+      - ../../:/consumer
 # Celery service
-  celery:
+  celery-worker:
     build:
       context: ../../
       dockerfile: docker/local/Dockerfile
-    command: celery -A core.celery worker --beat --loglevel=info
+    command: celery -A core.celery worker --loglevel=info
     depends_on:
       - redis
     env_file:
       - ../../.env
+    volumes:
+      - ../../:/consumer
+  celery-beat:
+    build:
+      context: ../../
+      dockerfile: docker/local/Dockerfile
+    command: celery -A core.celery beat --loglevel=info
+    depends_on:
+      - redis
+      - celery-worker
+    env_file:
+      - ../../.env
+    volumes:
+      - ../../:/consumer
 volumes:
   postgres_data:
     driver: local

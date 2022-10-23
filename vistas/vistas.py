@@ -14,16 +14,16 @@ from modelos import Tarea
 from modelos import TareaSchema
 from modelos import Archivo
 from modelos import ArchivoSchema
+from constans import UPLOAD_FOLDER
 
 from werkzeug.utils import secure_filename
-import glob
 
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
 archivo_schema = ArchivoSchema()
 
-INPUT_FILES_FOLDER = "media/"
-OUTPUT_FILES_FOLDER = "media/"
+INPUT_FILES_FOLDER = UPLOAD_FOLDER+"/"
+OUTPUT_FILES_FOLDER = UPLOAD_FOLDER+"/"
 
 
 class VistaRoot(Resource):
@@ -37,6 +37,7 @@ class VistaRoot(Resource):
 class VistaHealth(Resource):
 
     def get(self):
+
         return {"satus": "ok"}
 
 

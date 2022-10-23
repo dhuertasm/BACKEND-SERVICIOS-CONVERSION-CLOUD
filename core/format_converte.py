@@ -1,10 +1,15 @@
 import subprocess
 from pydub import AudioSegment
 import glob
+
 from modelos import db
 from modelos import Tarea
 from modelos import Archivo
 import os
+
+from constans import UPLOAD_FOLDER
+
+
 class ExportMusic:
 
     def __init__(self):
@@ -42,11 +47,13 @@ class ExportMusic:
 
     def export_file(self, data):
         name = '{}.{}'.format(data['nombre_archivo'], data['formato_salida'])
-        file_export = f"./media/{name}"
-        file_path = './media/{}.{}'.format(data['nombre_archivo'], data['formato_entrada'])
+        file_export = f"{UPLOAD_FOLDER}/{name}"
+        file_path = '{}/{}.{}'.format(UPLOAD_FOLDER, data['nombre_archivo'], data['formato_entrada'])
         dir_actual = os.path.dirname(os.path.abspath(__file__))
-        print(dir_actual)
-        print(glob.glob('./media/*', recursive=True))
+        print('file_export', file_export)
+        print('file_path', file_path)
+        print(glob.glob(UPLOAD_FOLDER+"/*", recursive=True))
+        print(glob.glob(UPLOAD_FOLDER+ "/*", recursive=True))
         try:
             converter = subprocess.call(['ffmpeg', '-i', file_path,
                              file_export])
