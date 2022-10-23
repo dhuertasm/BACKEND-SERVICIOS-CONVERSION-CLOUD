@@ -19,7 +19,7 @@ class Usuario(db.Model):
 
 class Tarea(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre_archivo = db.Column(db.String(256)) 
+    nombre_archivo = db.Column(db.String(256))
     formato_entrada = db.Column(db.String(128))
     formato_salida = db.Column(db.String(128))
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)

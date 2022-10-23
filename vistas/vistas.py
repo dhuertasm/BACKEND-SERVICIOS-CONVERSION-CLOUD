@@ -14,13 +14,17 @@ from modelos import Tarea
 from modelos import TareaSchema
 from modelos import Archivo
 from modelos import ArchivoSchema
+from constans import UPLOAD_FOLDER
+
+from werkzeug.utils import secure_filename
 
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
 archivo_schema = ArchivoSchema()
 
-INPUT_FILES_FOLDER = "media/"
-OUTPUT_FILES_FOLDER = "media/"
+INPUT_FILES_FOLDER = UPLOAD_FOLDER+"/"
+OUTPUT_FILES_FOLDER = UPLOAD_FOLDER+"/"
+
 
 class VistaRoot(Resource):
     def get(self):
@@ -33,6 +37,7 @@ class VistaRoot(Resource):
 class VistaHealth(Resource):
 
     def get(self):
+
         return {"satus": "ok"}
 
 
@@ -72,7 +77,7 @@ class VistaSignIn(Resource):
 class VistaLogIn(Resource):
     def post(self):
         usuario = Usuario.query.filter(Usuario.email == request.json['email'],
-                                       Usuario.password1 == request.json['password1']).first()
+                                       Usuario.password == request.json['password']).first()
         db.session.commit()
         if usuario is None:
             return {"mensaje": "El usuario no existe", "code": 404}
@@ -120,10 +125,10 @@ class VistaTasks(Resource):
             archivo_cargado = request.files["fileName"]
             nombre_archivo = secure_filename(archivo_cargado.filename)
             archivo_cargado.save(os.path.join(INPUT_FILES_FOLDER, nombre_archivo))
-            nueva_tarea = Tarea(nombre_archivo=nombre_archivo,\
+            nueva_tarea = Tarea(nombre_archivo=nombre_archivo.split(".")[0],\
                                  formato_entrada=nombre_archivo.split(".")[-1],\
                                  formato_salida=request.values["newFormat"],\
-                                 user_id = get_jwt_identity())
+                                 user_id =get_jwt_identity())
             db.session.add(nueva_tarea)
             db.session.commit()
             nuevo_archivo = Archivo(nombre_archivo=nombre_archivo,\
