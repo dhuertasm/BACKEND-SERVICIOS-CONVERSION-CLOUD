@@ -6,6 +6,8 @@ from modelos import db
 from modelos import Tarea
 from modelos import Archivo
 import os
+import time
+from flask import current_app
 
 from constans import UPLOAD_FOLDER
 
@@ -25,7 +27,8 @@ class ExportMusic:
         nueva_archivotranformado = Archivo(
                                 nombre_archivo=data["nombre_archivo"],
                                 ruta_archivo=data["ruta_archivo"],
-                                id_tarea=data["id_tarea"]
+                                id_tarea=data["id_tarea"],
+                                tiempo_proceso=data["tiempo_proceso"]
         )
         db.session.add(nueva_archivotranformado)
         db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \
@@ -55,17 +58,24 @@ class ExportMusic:
         print(glob.glob(UPLOAD_FOLDER+"/*", recursive=True))
         print(glob.glob(UPLOAD_FOLDER+ "/*", recursive=True))
         try:
+            #
+            init = time.time()
             converter = subprocess.call(['ffmpeg', '-i', file_path,
                              file_export])
-
+            end_n = time.time()
+            print("time", end_n - init)
+            #
             if converter == 0:
                 save_file = {
                     "nombre_archivo": name,
                     'ruta_archivo': file_export,
                     'id_tarea': data['id_tarea'],
+                    'tiempo_proceso': end_n
 
                 }
                 self.update_database_archivotranformado(save_file)
+                #
+
                 return True
 
             db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \

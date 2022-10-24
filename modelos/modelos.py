@@ -31,6 +31,7 @@ class Archivo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_archivo = db.Column(db.String(256))
     ruta_archivo = db.Column(db.String(256))
+    tiempo_proceso = db.Column(db.String(256))
     id_tarea = db.Column(db.Integer, db.ForeignKey('tarea.id'))
 
 class UsuarioSchema(SQLAlchemyAutoSchema):
