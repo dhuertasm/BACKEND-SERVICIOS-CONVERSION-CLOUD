@@ -14,9 +14,9 @@ ENV HOSTNAME postgres
 
 COPY . /app
 
-COPY ./requirements.txt /requirements.txt
+#COPY ./requirements.txt /requirements.txt
 
-RUN pip install -r /requirements.txt --no-cache-dir --default-timeout=1000
+RUN pip install -r /app/requirements.txt --no-cache-dir --default-timeout=1000
 
 
 COPY ./docker/local/flask_start /flask_start
