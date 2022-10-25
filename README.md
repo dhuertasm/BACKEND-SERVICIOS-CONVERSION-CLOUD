@@ -62,7 +62,7 @@ $  flask run --reload
 ### celery 
 
 ```sh
-$  celery -A core.celery worker --loglevel=info
+$  celery -A core.celery worker --beat --loglevel=info
 ```
 
 
@@ -75,11 +75,7 @@ $  celery -A core.celery worker --loglevel=info
 
 * Run your docker compose with this command in /docker/local
     ```shell
-        sudo docker-compose build --no-cache
-    ```
-  and 
-    ```shell
-        sudo docker-compose up
+        sudo docker-compose up --build   
     ```
 
     * **Note** if build is not required you can ommit the `--build`
