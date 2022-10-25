@@ -82,10 +82,10 @@ $  celery -A core.celery worker --beat --loglevel=info
 
     
 <!-- API -->
-## API
-The api consists in three enpoints, this will be describe bellow:
+## Pruebas
 
-### 1. Crear usuario
+En el archvio *test_plan_escenario_1.jmx*  y *test_plan_escenario_2.jmx* se encuentra
+los test de Jmeter para las pruebas de estres, carga del api converter format.
 
 
 <!-- ARCHITECTURE -->
