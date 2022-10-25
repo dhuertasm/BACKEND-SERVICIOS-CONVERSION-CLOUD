@@ -133,7 +133,9 @@ class VistaTasks(Resource):
             db.session.commit()
             nuevo_archivo = Archivo(nombre_archivo=nombre_archivo,\
                                     ruta_archivo=INPUT_FILES_FOLDER,\
-                                    id_tarea=nueva_tarea.id)
+                                    id_tarea=nueva_tarea.id,
+                                    tiempo_proceso=''
+                                    )
             db.session.add(nuevo_archivo)
             db.session.commit()
         return "Tarea creada exitosamente" 

@@ -1,8 +1,4 @@
 import datetime
-from email.policy import default
-from json import load
-from pyexpat import model
-from xml.etree.ElementInclude import include
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
@@ -23,6 +19,8 @@ class Tarea(db.Model):
     formato_entrada = db.Column(db.String(128))
     formato_salida = db.Column(db.String(128))
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
+    date_modified = db.Column(db.DateTime, default=datetime.datetime.now,
+                              onupdate=datetime.datetime.now)
     estado = db.Column(db.String(128), default="uploaded")
     user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     archivos = db.relationship('Archivo', cascade='all, delete, delete-orphan')
