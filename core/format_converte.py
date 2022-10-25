@@ -70,7 +70,7 @@ class ExportMusic:
                     "nombre_archivo": name,
                     'ruta_archivo': file_export,
                     'id_tarea': data['id_tarea'],
-                    'tiempo_proceso': end_n
+                    'tiempo_proceso': str(end_n - init)
 
                 }
                 self.update_database_archivotranformado(save_file)
