@@ -11,7 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV CELERY_BROKER_URL redis://redis:6379/0
 ENV HOSTNAME postgres
-
+ENV MEDIAFILE /consumer
 COPY . /app
 
 #COPY ./requirements.txt /requirements.txt

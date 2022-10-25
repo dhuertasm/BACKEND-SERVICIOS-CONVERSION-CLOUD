@@ -7,6 +7,7 @@ from constans import UPLOAD_FOLDER
 
 @app.task()
 def add(a, b):
+    print(UPLOAD_FOLDER)
     print(glob.glob(UPLOAD_FOLDER+"/*", recursive=True))
     return a + b
 
