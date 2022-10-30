@@ -20,7 +20,6 @@ from vistas import VistaArchivo
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'mediafiles')
 
-#UPLOAD_FOLDER = './mediafiles'
 ALLOWED_EXTENSIONS = {'txt', 'mp3', 'acc', 'ogg', 'wav', 'wma', 'mp4'}
 
 app = Flask(__name__)
