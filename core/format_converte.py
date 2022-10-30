@@ -52,17 +52,13 @@ class ExportMusic:
         name = '{}.{}'.format(data['nombre_archivo'], data['formato_salida'])
         file_export = f"{UPLOAD_FOLDER}/{name}"
         file_path = '{}/{}.{}'.format(UPLOAD_FOLDER, data['nombre_archivo'], data['formato_entrada'])
-        dir_actual = os.path.dirname(os.path.abspath(__file__))
-        print('file_export', file_export)
-        print('file_path', file_path)
-        print(glob.glob(UPLOAD_FOLDER+"/*", recursive=True))
-        print(glob.glob(UPLOAD_FOLDER+ "/*", recursive=True))
         try:
             #
             init = time.time()
             converter = subprocess.call(['ffmpeg', '-i', file_path,
                              file_export])
             end_n = time.time()
+            time_operation = end_n - init
             print("time", end_n - init)
             #
             if converter == 0:
@@ -70,7 +66,7 @@ class ExportMusic:
                     "nombre_archivo": name,
                     'ruta_archivo': file_export,
                     'id_tarea': data['id_tarea'],
-                    'tiempo_proceso': str(end_n - init)
+                    'tiempo_proceso': str(time_operation)
 
                 }
                 self.update_database_archivotranformado(save_file)
