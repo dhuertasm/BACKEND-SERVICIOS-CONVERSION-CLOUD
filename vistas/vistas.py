@@ -17,7 +17,7 @@ from modelos import ArchivoSchema
 from constans import UPLOAD_FOLDER
 
 from werkzeug.utils import secure_filename
-
+# from core.tasks import subir_archivo
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
 archivo_schema = ArchivoSchema()
