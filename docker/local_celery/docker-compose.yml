@@ -1,0 +1,22 @@
+version: '3'
+services:
+# Redis Service
+  redis:
+    image: redis:3.2
+    ports:
+      - '6379:6379'
+# Celery service
+  celery-worker:
+    build:
+      context: ../../
+      dockerfile: docker/local/Dockerfile
+    command: celery -A app.celery worker --beat --loglevel=info
+    depends_on:
+      - redis
+    volumes:
+      - ../../:/consumer
+volumes:
+  postgres_data:
+    driver: local
+  redis-data:
+    driver: local

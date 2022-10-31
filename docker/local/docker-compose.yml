@@ -1,60 +1,51 @@
 version: '3'
 services:
 # Redis Service
-  redis:
-    image: redis:3.2
-    ports:
-      - '6379:6379'
+#  redis:
+#    image: redis:3.2
+#    ports:
+#      - '6379:6379'
 # posgres Service
-  postgres:
-    image: 'postgres:latest'
-    restart: always
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=conversion
-    ports:
-      - '5432:5432'
+#  postgres:
+#    image: 'postgres:latest'
+#    restart: always
+#    environment:
+#      - POSTGRES_USER=admin
+#      - POSTGRES_PASSWORD=admin
+#      - POSTGRES_DB=conversion
+#    ports:
+#      - '5432:5432'
 # Django or some framework APP
   app: &falcon
     build:
       context: ../../
       dockerfile: docker/local/Dockerfile
     image: config
-    depends_on:
-      - redis
-      - postgres
-    env_file:
-      - ../../.env
     ports:
-      - "8001:8001"
+      - "5000:5000"
     command: /flask_start
     volumes:
       - ../../:/consumer
 # Celery service
-  celery-worker:
-    build:
-      context: ../../
-      dockerfile: docker/local/Dockerfile
-    command: celery -A core.celery worker --loglevel=info
-    depends_on:
-      - redis
-    env_file:
-      - ../../.env
-    volumes:
-      - ../../:/consumer
-  celery-beat:
-    build:
-      context: ../../
-      dockerfile: docker/local/Dockerfile
-    command: celery -A core.celery beat --loglevel=info
-    depends_on:
-      - redis
-      - celery-worker
-    env_file:
-      - ../../.env
-    volumes:
-      - ../../:/consumer
+#  celery-worker:
+#    build:
+#      context: ../../
+#      dockerfile: docker/local/Dockerfile
+#    command: celery -A core.celery worker --loglevel=info
+#    depends_on:
+#      - redis
+#    volumes:
+#      - ../../:/consumer
+#  celery-beat:
+#    build:
+#      context: ../../
+#      dockerfile: docker/local/Dockerfile
+#    command: celery -A core.celery beat --loglevel=info
+#    depends_on:
+#      - redis
+#      - celery-worker
+#    volumes:
+#      - ../../:/consumer
 volumes:
   postgres_data:
     driver: local

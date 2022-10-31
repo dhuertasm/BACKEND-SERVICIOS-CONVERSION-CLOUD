@@ -2,9 +2,13 @@ import subprocess
 from pydub import AudioSegment
 import glob
 
+from email.message import EmailMessage
+import smtplib
+
 from modelos import db
 from modelos import Tarea
 from modelos import Archivo
+from modelos import Usuario
 import os
 import time
 from flask import current_app
@@ -41,7 +45,8 @@ class ExportMusic:
                  {"formato_entrada": i.formato_entrada,
                   'id_tarea': i.id,
                   'formato_salida': i.formato_salida,
-                  'nombre_archivo': i.nombre_archivo}
+                  'nombre_archivo': i.nombre_archivo,
+                  'id_usuario':i.user_id}
             for i in all_uploaded
         ]
 
@@ -49,6 +54,7 @@ class ExportMusic:
         pass
 
     def export_file(self, data):
+        print('export')
         name = '{}.{}'.format(data['nombre_archivo'], data['formato_salida'])
         file_export = f"{UPLOAD_FOLDER}/{name}"
         file_path = '{}/{}.{}'.format(UPLOAD_FOLDER, data['nombre_archivo'], data['formato_entrada'])
@@ -71,7 +77,7 @@ class ExportMusic:
                 }
                 self.update_database_archivotranformado(save_file)
                 #
-
+                enviar_mail(data)
                 return True
 
             db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \
@@ -89,4 +95,20 @@ class ExportMusic:
 
 
 
+def enviar_mail(data):
 
+    destinatario = db.session.query(Usuario).get(data['id_usuario'])
+    print(destinatario.email, data)
+    remitente = "flask.nube@outlook.com"
+    destinatario = destinatario.email
+    mensaje = f"¡El Archivo {data['nombre_archivo']} fue tranformado!"
+    email = EmailMessage()
+    email["From"] = remitente
+    email["To"] = destinatario
+    email["Subject"] = f"Archvio {data['nombre_archivo']} tranformado"
+    email.set_content(mensaje)
+    smtp = smtplib.SMTP("smtp-mail.outlook.com", port=587)
+    smtp.starttls()
+    smtp.login(remitente, "flask.123")
+    smtp.sendmail(remitente, destinatario, email.as_string())
+    smtp.quit()
