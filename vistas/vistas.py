@@ -1,4 +1,5 @@
 import os
+import io
 from flask import jsonify, request
 from flask import send_from_directory
 from flask import Response
@@ -17,7 +18,7 @@ from modelos import ArchivoSchema
 from constans import UPLOAD_FOLDER
 
 from werkzeug.utils import secure_filename
-# from core.tasks import subir_archivo
+
 usuario_schema = UsuarioSchema()
 tarea_schema = TareaSchema()
 archivo_schema = ArchivoSchema()
