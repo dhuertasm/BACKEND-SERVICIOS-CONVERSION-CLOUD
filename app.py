@@ -21,14 +21,14 @@ from vistas import VistaArchivo
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'mediafiles')
 
-ALLOWED_EXTENSIONS = {'txt', 'mp3', 'acc', 'ogg', 'wav', 'wma', 'mp4'}
+ALLOWED_EXTENSIONS = {'txt', 'mp3', 'aac', 'ogg', 'wav', 'wma', 'mp4'}
 
 app = Flask(__name__)
 # our database uri
 username = "admin"
 password = "admin"
 dbname = "conversion"
-hostname = os.getenv('HOSTNAME', '104.154.169.223')
+hostname = os.getenv('HOSTNAME', '34.171.227.62')
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{username}:{password}@{hostname}:5432/{dbname}"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///conversion.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

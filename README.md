@@ -62,7 +62,7 @@ $  flask run --reload
 ### celery 
 
 ```sh
-$  celery -A core.celery worker --beat --loglevel=info
+celery -A app.celery worker --beat --loglevel=info
 ```
 
 

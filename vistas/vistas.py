@@ -8,6 +8,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_restful import Resource
 
+from core.gcp_store import GCP
 from modelos import db
 from modelos import Usuario
 from modelos import UsuarioSchema
@@ -16,6 +17,7 @@ from modelos import TareaSchema
 from modelos import Archivo
 from modelos import ArchivoSchema
 from constans import UPLOAD_FOLDER
+from constans import UPLOAD_FOLDER_BUCKET, BUCKET_KEY_GCP
 
 from werkzeug.utils import secure_filename
 
@@ -30,6 +32,7 @@ OUTPUT_FILES_FOLDER = UPLOAD_FOLDER+"/"
 class VistaRoot(Resource):
     def get(self):
         try:
+            print(BUCKET_KEY_GCP, )
             return {"MicroService": "cloud conversion tool is Ready v1"}
         except Exception as e:
             return {"satus": e}
@@ -46,6 +49,10 @@ class VistaSignIn(Resource):
 
     def post(self):
         try:
+            existe = Usuario.query.filter(Usuario.email == request.json["username"]).first()
+            if existe is not None:
+                return {"mensaje": "El usuario ya existe, pruebe con otro"}
+
             if request.json["password1"] == request.json["password2"]:
                 nuevo_usuario = Usuario(
                     username=request.json["username"],
@@ -125,7 +132,8 @@ class VistaTasks(Resource):
         else:
             archivo_cargado = request.files["fileName"]
             nombre_archivo = secure_filename(archivo_cargado.filename)
-            archivo_cargado.save(os.path.join(INPUT_FILES_FOLDER, nombre_archivo))
+            GCP().upload_store_gcp(archivo_cargado, nombre_archivo)
+            # archivo_cargado.save(os.path.join(INPUT_FILES_FOLDER, nombre_archivo))
             nueva_tarea = Tarea(nombre_archivo=nombre_archivo.split(".")[0],\
                                  formato_entrada=nombre_archivo.split(".")[-1],\
                                  formato_salida=request.values["newFormat"],\
@@ -133,7 +141,7 @@ class VistaTasks(Resource):
             db.session.add(nueva_tarea)
             db.session.commit()
             nuevo_archivo = Archivo(nombre_archivo=nombre_archivo,\
-                                    ruta_archivo=INPUT_FILES_FOLDER,\
+                                    ruta_archivo=UPLOAD_FOLDER_BUCKET,\
                                     id_tarea=nueva_tarea.id,
                                     tiempo_proceso=''
                                     )
@@ -183,8 +191,9 @@ class VistaArchivo(Resource):
             query = db.session.query(Archivo).filter_by(nombre_archivo=filename).all()
             if (len(query)==0):
                 return Response("Not Found", status=404)
-            print(query[0].ruta_archivo)
+            print(OUTPUT_FILES_FOLDER)
             print(query[0].nombre_archivo)
-            return send_from_directory(query[0].ruta_archivo,query[0].nombre_archivo, as_attachment=True)
+            GCP().download_store_gcp(filename)
+            return send_from_directory(OUTPUT_FILES_FOLDER, query[0].nombre_archivo, as_attachment=True)
         except:
             return Response("Not Found", status=404)

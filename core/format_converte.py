@@ -1,10 +1,12 @@
 import subprocess
 from pydub import AudioSegment
 import glob
+from os import remove
 
 from email.message import EmailMessage
 import smtplib
 
+from core.gcp_store import GCP
 from modelos import db
 from modelos import Tarea
 from modelos import Archivo
@@ -13,7 +15,7 @@ import os
 import time
 from flask import current_app
 
-from constans import UPLOAD_FOLDER
+from constans import UPLOAD_FOLDER, UPLOAD_FOLDER_BUCKET
 
 
 class ExportMusic:
@@ -57,6 +59,8 @@ class ExportMusic:
         print('export')
         name = '{}.{}'.format(data['nombre_archivo'], data['formato_salida'])
         file_export = f"{UPLOAD_FOLDER}/{name}"
+        # descargar archivo
+        GCP().download_store_gcp('{}.{}'.format(data['nombre_archivo'], data['formato_entrada']))
         file_path = '{}/{}.{}'.format(UPLOAD_FOLDER, data['nombre_archivo'], data['formato_entrada'])
         try:
             #
@@ -68,12 +72,13 @@ class ExportMusic:
             print("time", end_n - init)
             #
             if converter == 0:
+                subir_archivo_carpeta(file_export)
+                borrar_archivos(file_path)
                 save_file = {
                     "nombre_archivo": name,
-                    'ruta_archivo': file_export,
+                    'ruta_archivo': f'{UPLOAD_FOLDER_BUCKET}/{name}',
                     'id_tarea': data['id_tarea'],
                     'tiempo_proceso': str(time_operation)
-
                 }
                 self.update_database_archivotranformado(save_file)
                 #
@@ -112,3 +117,13 @@ def enviar_mail(data):
     smtp.login(remitente, "flask.123")
     smtp.sendmail(remitente, destinatario, email.as_string())
     smtp.quit()
+
+
+def subir_archivo_carpeta(ruta_archivo):
+    archivo_tranformado = open(ruta_archivo, 'rb')
+    nombre_archivo = ruta_archivo.split('/')[-1]
+    GCP().upload_store_gcp(archivo_tranformado, nombre_archivo)
+    borrar_archivos(ruta_archivo)
+
+def borrar_archivos(ruta_archivo):
+    remove(ruta_archivo)
