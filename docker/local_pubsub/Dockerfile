@@ -19,8 +19,8 @@ COPY . /app
 RUN pip install -r /app/requirements.txt --no-cache-dir --default-timeout=1000
 
 
-COPY ./docker/local/flask_start /flask_start
+COPY ./docker/local_pubsub/pusub_start /pusub_start
 
-#RUN chmod +x /pubsub_start
+RUN chmod +x /pusub_start
 
 WORKDIR /app

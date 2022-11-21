@@ -1,3 +1,4 @@
+import json
 import os
 import io
 from flask import jsonify, request
@@ -145,6 +146,12 @@ class VistaTasks(Resource):
                                     id_tarea=nueva_tarea.id,
                                     tiempo_proceso=''
                                     )
+            message = {"nombre_archivo": nombre_archivo.split(".")[0],
+                       "formato_entrada": nombre_archivo.split(".")[-1],
+                       "formato_salida": request.values["newFormat"],
+                       "id_tarea": nueva_tarea.id,
+                       'id_usuario': get_jwt_identity()}
+            GCP().publisher_message(message=json.dumps(message))
             db.session.add(nuevo_archivo)
             db.session.commit()
         return "Tarea creada exitosamente" 

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  app: &falcon
+    build:
+      context: ../../
+      dockerfile: docker/local_pubsub/Dockerfile
+    image: config
+
+    command: /pusub_start
+    volumes:
+      - ../../:/consumer
+volumes:
+  postgres_data:
+    driver: local
+  redis-data:
+    driver: local

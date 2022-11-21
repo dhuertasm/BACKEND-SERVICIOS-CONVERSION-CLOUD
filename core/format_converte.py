@@ -14,14 +14,14 @@ from modelos import Usuario
 import os
 import time
 from flask import current_app
-
+from app import app
 from constans import UPLOAD_FOLDER, UPLOAD_FOLDER_BUCKET
 
 
 class ExportMusic:
 
     def __init__(self):
-        pass
+        app.app_context().push()
 
 
     def update_state_archivosubido(self, state_i, state_f) -> None:
@@ -30,6 +30,7 @@ class ExportMusic:
         db.session.commit()
 
     def update_database_archivotranformado(self, data) -> None:
+        print('def update')
         nueva_archivotranformado = Archivo(
                                 nombre_archivo=data["nombre_archivo"],
                                 ruta_archivo=data["ruta_archivo"],
@@ -37,6 +38,7 @@ class ExportMusic:
                                 tiempo_proceso=data["tiempo_proceso"]
         )
         db.session.add(nueva_archivotranformado)
+        print('updae tarea')
         db.session.query(Tarea).filter(Tarea.id == data["id_tarea"]). \
             update({Tarea.estado: 'processed'}, synchronize_session=False)
         db.session.commit()
@@ -80,8 +82,9 @@ class ExportMusic:
                     'id_tarea': data['id_tarea'],
                     'tiempo_proceso': str(time_operation)
                 }
+                print("update")
                 self.update_database_archivotranformado(save_file)
-                #
+                print("mail")
                 enviar_mail(data)
                 return True
 
@@ -89,7 +92,7 @@ class ExportMusic:
                 update({Tarea.estado: 'uploaded'}, synchronize_session=False)
             db.session.commit()
         except Exception as e:
-            print(e)
+            print('error', e)
             return False
 
     def process(self):

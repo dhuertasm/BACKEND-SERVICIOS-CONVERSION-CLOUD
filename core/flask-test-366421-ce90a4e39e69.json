@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "flask-test-366421",
+  "private_key_id": "ce90a4e39e69af61c23a4d51aadcece78a68d33a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDG1wS+B21VMGKp\nKW0Jd9VQu29fvdiGgn00ineRwMqzbJyssvn5kgHqjyNFch7PWHct66MBvzJxcEVn\nbPinFuv9g19m/yAtYcQHMSdJ7nClZJIOZSaZdxqU9YbDDuqGoW3cL2Zhx+aXu4pq\noML6EBmCYetlhg3y3UGHn/arNbFhKQjnNs0oi7BgPnT/70BtiVUEe1agaNRLiI+L\n+8Nj0pV0k1WLXizUrw+YwgjzwKdD8iyCDEsH0yfpKKzZHNwyTHEkf8BemMB/JCkm\nYLU5+bU0pxK7hL4Bf/q87huJcuw8jpWoPfKt24yPVHiBZSxPOiY9obOMzFXgm7eY\n9jZe+s7zAgMBAAECggEACC31MAoDnsMCEG+3xA3jMQsrEDcHHO5NXXXjoTA+1KBb\n5HmyVOiDUAAdf9PkXcprO1Rp5AzIggvIrHIBaazhGqzt3rNKXrxv5MZKQEt9VgMW\nmXqpocYurc7KulXFP0Bw3//YufPI7m2GZxacdAeF2Y+Z90/nsqfbu0smO3jk6e22\nQjBjiOrubhpQQ4omhmLUUWTQWewX0/BRdkQM5tfXuQ45M4fNr6YpNNokLeEam4vf\nNidKOkzhFOVNNH4UkzLdB8G7BuE2sHHU+PWKs2ux5z86IqimY16nIhLxMKwUdJtJ\nJe8GdZTCtPT4YYgB+nmfdg2TroYqTXuU56vjT/BrTQKBgQDizrk2wnlDhmOA7kJP\n/rlMkej05Ee2EgWOEj37i83eKjQX8ROWnyaRmC0mC4jIRiCPtvRL0zs/iWzfRqlN\nv9uowujTi1W5MP7yHealt/qcygZ6CoDPEPkFY8a0QU8TJyc0sUukN1nbGWl0/673\nsoMJdUZ0h1yX75LdBk+P9LCZnwKBgQDgbsQ6+86n5paN83NF1UOyu4dgBjpTnTVd\nyucDYF1aPJJFjhVmi4QNr/40/vBejXL75r9QCY07HnziVv8rS6ao7wD/Thp28GeP\nqKcfsOj5+OtSxCH7oV2etwiHGlAxCI5vUb2zHkaJ/YxET0oTDpCeVzSr0SqZBUxC\nA/h/6RlyLQKBgQDdYKmnqWpzXlkBH43aRubWthSL88WLEUwav/N/85Wdo9P1Cnn0\nKqOauM5YtCluUgS2Qf1xhVvvSFPcGzxlhz8AGj7nPLkPaaNu74CRgGI9Z3Oq61WO\nxyJJAHqStqxYJX8/D06lmuE52jP03xwI6VS9hpqeYwEdy9mtottFx7AYQQKBgA1N\nAzwrqDezJsEK6I3+8aAqFP/P3q0N6BfC6qX8lAvBAzo0DXiiVBUrlPk3Eq/H2kSr\njDMGHeSfDe+sEDtUpG/mmjyHOHJMFRcie6UZKvWFlwy0qv7qtU2us0aufIorY6Wd\nRozTAoMzD5kMyesPNersaCa2orum4LoY2iVafzORAoGBAKTbdIVmiwn8BpJK7qiY\nQOxOTHhmU4F1TTBOz5tDgSDF5Khv0wogqnV5mp5NqKjQMg3Q61ovjnpWMexid7qo\ngPZW8rU/cRtDnqQ6TSe9Rb6HvDtoq+Dh5AjibHZEWLai9CBQEYiURUPU3efyjKG1\nqM8T0SXZg6OshGVZJgL81hcP\n-----END PRIVATE KEY-----\n",
+  "client_email": "cristian-nube@flask-test-366421.iam.gserviceaccount.com",
+  "client_id": "102319524995203743169",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cristian-nube%40flask-test-366421.iam.gserviceaccount.com"
+}
