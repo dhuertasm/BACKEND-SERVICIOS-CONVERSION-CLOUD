@@ -11,7 +11,7 @@ class PubSubConverter:
     def __init__(self):
 
 
-        self.json_key = f'{BUCKET_KEY_GCP}/flask-test-366421-ce90a4e39e69.json'
+        self.json_key = f'{BUCKET_KEY_GCP}/key.json'
 
     def subscriber_message(self):
         subscriber = pubsub_v1.SubscriberClient.from_service_account_json(self.json_key)

@@ -7,7 +7,7 @@ from constans import BUCKET_KEY_GCP, UPLOAD_FOLDER
 class GCP:
 
     def __init__(self):
-        self.json_key = f'{BUCKET_KEY_GCP}/flask-test-366421-ce90a4e39e69.json'
+        self.json_key = f'{BUCKET_KEY_GCP}/key.json'
 
     def gcp(self):
         bucket_name = "nube-media-files"
